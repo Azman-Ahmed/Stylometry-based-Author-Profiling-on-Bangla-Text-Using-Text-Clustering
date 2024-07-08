@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WTF Page</title>
+</head>
+<body>
+    <h1>Welcome to the WTF Page</h1>
+
+    <form action="/wtf" method="POST">
+        <label for="text1">Enter some text:</label>
+        <input type="text" id="text1" name="text1">
+        <input type="submit" value="Submit">
+    </form>
+
+    {% if text2 %}
+        <h2>You submitted: {{ text2 }}</h2>
+    {% endif %}
+</body>
+</html>
