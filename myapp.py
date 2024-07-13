@@ -1,44 +1,69 @@
-import os
-from flask import Flask, request, render_template
 import joblib
+import os
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# Set the path to the directory where your models are located
-models_dir = os.path.dirname(os.path.abspath(__file__))  # get current directory
-
 # Load your trained models and preprocessing functions
+models_dir = "E:/400C application/pythonProject"
+
 vectorizer = joblib.load(os.path.join(models_dir, 'tfidf_vectorizer.pkl'))
 pca_model = joblib.load(os.path.join(models_dir, 'pca.pkl'))
-kmeans_model = joblib.load(os.path.join(models_dir, 'kmeans.pkl'))
 umap_model = joblib.load(os.path.join(models_dir, 'umap.pkl'))
+kmeans_model = joblib.load(os.path.join(models_dir, 'kmeans.pkl'))
 dbscan_model = joblib.load(os.path.join(models_dir, 'dbscan.pkl'))
 
-# Define functions for preprocessing and prediction
-def preprocess_input(text):
-    # Implement your preprocessing steps using loaded models
-    # Example: transform text using loaded vectorizer and pca_model
-    vectorized_input = vectorizer.transform([text])
-    transformed_input = pca_model.transform(vectorized_input)
-    return transformed_input
 
-def predict_author(input_data):
-    # Implement your prediction logic using loaded kmeans_model
-    predicted_label = kmeans_model.predict(input_data)
-    return predicted_label[0]  # assuming single prediction for user input
+def preprocess_text(text):
+    # Vectorize the text input
+    vectorized_text = vectorizer.transform([text])
 
-# Define your Flask routes
-@app.route('/')
-def index():
-    return render_template('index.html')  # render your HTML form
+    # Apply PCA transformation
+    pca_output = pca_model.transform(vectorized_text.toarray())
+
+    # Apply UMAP transformation
+    umap_output = umap_model.transform(pca_output)
+
+    return umap_output
+
+def predict_with_kmeans(data):
+    # Predict cluster using KMeans
+    cluster_label = kmeans_model.predict(data)
+    return cluster_label[0]
+
+def predict_with_dbscan(data):
+    # Predict cluster using DBSCAN
+    cluster_label = dbscan_model.fit_predict(data)
+    return cluster_label[0]
+
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    if request.method == 'POST':
-        user_input = request.form['user_input']  # get user input from the form
-        processed_input = preprocess_input(user_input)
-        predicted_author = predict_author(processed_input)
-        return render_template('result.html', author=predicted_author)
+    data = request.json  # Assuming JSON input like {'text': 'your_text_here'}
+
+    if 'text' not in data:
+        return jsonify({'error': 'Missing text input'}), 400
+
+    text = data['text']
+
+    try:
+        # Preprocess the text
+        umap_output = preprocess_text(text)
+
+        # Predict with KMeans
+        kmeans_prediction = predict_with_kmeans(umap_output)
+
+        # Predict with DBSCAN
+        dbscan_prediction = predict_with_dbscan(umap_output)
+
+        return jsonify({
+            'text': text,
+            'kmeans_cluster': kmeans_prediction,
+            'dbscan_cluster': dbscan_prediction
+        }), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
