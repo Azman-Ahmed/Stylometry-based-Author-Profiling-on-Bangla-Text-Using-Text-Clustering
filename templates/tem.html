@@ -1,19 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>WTF Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Author Prediction</title>
 </head>
 <body>
-    <h1>Welcome to the WTF Page</h1>
-
-    <form action="/wtf" method="POST">
-        <label for="text1">Enter some text:</label>
-        <input type="text" id="text1" name="text1">
-        <input type="submit" value="Submit">
+    <h1>Predict Author</h1>
+    <form action="/predict" method="post">
+        <textarea name="user_input" rows="4" cols="50"></textarea><br><br>
+        <input type="submit" value="Predict">
     </form>
-
-    {% if text2 %}
-        <h2>You submitted: {{ text2 }}</h2>
-    {% endif %}
 </body>
 </html>
