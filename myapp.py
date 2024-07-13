@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request
 import joblib
-import numpy as np
+
 
 app = Flask(__name__)
 
-# Load your pre-trained models and vectorizer
+
 vectorizer = joblib.load('models/tfidf_vectorizer.pkl')
 pca_model = joblib.load('models/pca.pkl')
 umap_model = joblib.load('models/umap.pkl')
@@ -12,13 +12,13 @@ umap_model = joblib.load('models/umap.pkl')
 
 def preprocess_text(text):
 
-    cleaned_text = text  # Replace with your actual cleaning and tokenization logic
+    cleaned_text = text
     vectorized_text = vectorizer.transform([cleaned_text])
     pca_transformed = pca_model.transform(vectorized_text)
     umap_transformed = umap_model.transform(pca_transformed)
     return umap_transformed
 
-# Route for handling user input
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
