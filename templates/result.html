@@ -2,11 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prediction Result</title>
+    <title>Text Processing Result</title>
+    <!-- Optional: Add any CSS styles you need -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        h2 {
+            margin-bottom: 10px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Prediction Result</h1>
-    <p>Predicted Author: {{ author }}</p>
+    <h2>Text Processing Result</h2>
+    <div class="result">
+        <p><strong>Prediction Result:</strong> {{ prediction }}</p>
+        <!-- Display more processed data as needed -->
+    </div>
 </body>
 </html>
