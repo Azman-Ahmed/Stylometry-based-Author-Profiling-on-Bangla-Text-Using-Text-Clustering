@@ -1,2 +1,6 @@
 # Stylometry-based-Author-Profiling-on-Bangla-Text-Using-Text-Clustering
 This project focuses on author profiling using stylometric analysis of Bangla texts. By employing text clustering techniques, we aim to identify and group texts written by the same author. The repository includes data preprocessing scripts, feature extraction methods, clustering algorithms, and evaluation metrics tailored for Bangla language texts.
+
+## Steps to run development server
+- pip install -r requirements.txt
+- python ./myapp.py
